@@ -58,9 +58,11 @@ const mensagensDeErro = {
 }
 
 const validadores = {
-    dataNascimento:input => validaDataNascimento(input),
-    cpf:input => validaCPF(input),
-    cep:input => recuperarCEP(input)
+    dataNascimento: input => validaDataNascimento(input),
+    cpf: input => validaCPF(input),
+    cep: input => recuperarCEP(input),
+    telefone: input => validaTelefone(input),
+    instagram: input => validaInstagram(input)
 }
 
 function mostraMensagemDeErro(tipoDeInput, input) {
@@ -72,6 +74,44 @@ function mostraMensagemDeErro(tipoDeInput, input) {
     })
     
     return mensagem
+}
+
+function validaTelefone(input) {
+    const telefone = input.value.replace(/\D/g, '')
+    let mensagem = ''
+    
+    if (telefone === '') {
+        input.setCustomValidity('O telefone é obrigatório.');
+    } else if (!isDDDValido(telefone)) {
+        input.setCustomValidity('O DDD informado não é válido. Deve ser um número entre 11 e 99.');
+    } else if (!isNumeroValido(telefone)) {
+        input.setCustomValidity('O número de celular deve começar com 9 e ter 9 dígitos.');
+    } else {
+        input.setCustomValidity('');
+    }
+}
+
+function isDDDValido(telefone) {
+    const ddd = telefone.substring(0, 2); 
+    const regexDDD = /^[1-9]{2}$/; 
+    return regexDDD.test(ddd) && parseInt(ddd) >= 11 && parseInt(ddd) <= 99;
+}
+
+function isNumeroValido(telefone) {
+    const numero = telefone.substring(2); 
+    const regexNumero = /^[9]\d{8}$/; 
+    return numero.length === 9 && regexNumero.test(numero);
+}
+
+
+function validaInstagram(input) {
+    const regexInstagram = /^@[A-Za-z0-9_]+$/; 
+
+    if (!regexInstagram.test(input.value)) {
+        input.setCustomValidity('O Instagram deve começar com "@" seguido do nome de usuário.');
+    } else {
+        input.setCustomValidity('');
+    }
 }
 
 function validaDataNascimento(input) {
